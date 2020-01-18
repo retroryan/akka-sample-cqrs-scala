@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: main-write
-        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.2
+        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.4
         readinessProbe:
           httpGet:
             path: "/ready"

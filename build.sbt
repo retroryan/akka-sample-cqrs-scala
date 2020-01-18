@@ -2,6 +2,7 @@
 val AkkaVersion = "2.6.0"
 val AkkaPersistenceCassandraVersion = "0.100"
 val AkkaHttpVersion = "10.1.10"
+val AkkaClusterBootstrapVersion = "1.0.5"
 
 lazy val `akka-sample-cqrs-scala` = project
   .in(file("."))
@@ -12,11 +13,15 @@ lazy val `akka-sample-cqrs-scala` = project
   )
   .settings(
     organization := "com.lightbend.akka.samples",
-    version := "1.2",
+    version := "1.4",
     scalaVersion := "2.13.1",
     scalacOptions in Compile ++= Seq("-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-Xlint:unchecked", "-Xlint:deprecation"),
     libraryDependencies ++= Seq(
+      "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % AkkaClusterBootstrapVersion,
+      "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % AkkaClusterBootstrapVersion,
+      "com.lightbend.akka.management" %% "akka-management-cluster-http" % AkkaClusterBootstrapVersion,
+      "com.typesafe.akka" %% "akka-discovery" % AkkaVersion,
         "com.typesafe.akka" %% "akka-cluster-sharding-typed" % AkkaVersion,
         "com.typesafe.akka" %% "akka-persistence-typed" % AkkaVersion,
         "com.typesafe.akka" %% "akka-persistence-query" % AkkaVersion,

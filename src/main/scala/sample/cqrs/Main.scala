@@ -5,6 +5,8 @@ import java.io.File
 import akka.actor.typed.{ActorSystem, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.cluster.typed.Cluster
+import akka.management.cluster.bootstrap.ClusterBootstrap
+import akka.management.scaladsl.AkkaManagement
 import akka.persistence.cassandra.testkit.CassandraLauncher
 import com.typesafe.config.{Config, ConfigFactory}
 
@@ -48,6 +50,10 @@ object Main {
     }
 
     val system = ActorSystem[Nothing](Guardian(), "Shopping", config)
+
+    import akka.actor.typed.scaladsl.adapter._
+    AkkaManagement.get(system.toClassic).start
+    ClusterBootstrap.get(system.toClassic).start
 
     config.entrySet().forEach(nxt => system.log.info(s"$nxt"))
 
