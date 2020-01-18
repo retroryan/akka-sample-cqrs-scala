@@ -1,12 +1,18 @@
+
 val AkkaVersion = "2.6.0"
 val AkkaPersistenceCassandraVersion = "0.100"
 val AkkaHttpVersion = "10.1.10"
 
 lazy val `akka-sample-cqrs-scala` = project
   .in(file("."))
+  .enablePlugins(
+      JavaAppPackaging,
+      DockerPlugin,
+      AshScriptPlugin
+  )
   .settings(
     organization := "com.lightbend.akka.samples",
-    version := "1.0",
+    version := "1.2",
     scalaVersion := "2.13.1",
     scalacOptions in Compile ++= Seq("-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-Xlint:unchecked", "-Xlint:deprecation"),

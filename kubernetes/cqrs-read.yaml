@@ -1,0 +1,43 @@
+apiVersion: app.lightbend.com/v1alpha1
+kind: AkkaCluster
+metadata:
+  name: cqrs-service
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: main-read
+        image: cqrs-service:0.2
+        readinessProbe:
+          httpGet:
+            path: "/ready"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        livenessProbe:
+          httpGet:
+            path: "/alive"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: remoting
+          containerPort: 2552
+        - name: management
+          containerPort: 8558
+        env:
+        - name: CLUSTER_ROLE_ONE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: read-model
+        - name: CASSANDRA_CONTACT_POINT_ONE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: cassandra-contact-point-one

@@ -28,7 +28,7 @@ class ShoppingCartRoutes()(implicit system: ActorSystem[_]) {
 
   implicit private val timeout: Timeout =
     Timeout.create(system.settings.config.getDuration("shopping.askTimeout"))
-  private val sharding = ClusterSharding(system)
+  private val sharding: ClusterSharding = ClusterSharding(system)
 
   import JsonFormats._
   import ShoppingCartRoutes._
@@ -78,7 +78,7 @@ class ShoppingCartRoutes()(implicit system: ActorSystem[_]) {
                 .readJournalFor[CassandraReadJournal](CassandraReadJournal.Identifier)
 
               val shoppingCarts: scaladsl.Source[ShoppingCart.ItemAdded, NotUsed] = queries
-                .eventsByTag(ShoppingCart.CART_OPENED, NoOffset)
+                .currentEventsByTag(ShoppingCart.CART_OPENED, NoOffset)
                 .map {
                   eventEnvelope =>
                     eventEnvelope.event match {

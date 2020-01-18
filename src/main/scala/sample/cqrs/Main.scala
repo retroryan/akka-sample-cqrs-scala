@@ -1,51 +1,69 @@
 package sample.cqrs
 
 import java.io.File
-import java.util.concurrent.CountDownLatch
+
+import akka.actor.typed.{ActorSystem, Behavior}
+import akka.actor.typed.scaladsl.Behaviors
+import akka.cluster.typed.Cluster
+import akka.persistence.cassandra.testkit.CassandraLauncher
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.Behaviors
-import akka.cluster.typed.Cluster
-import akka.persistence.cassandra.testkit.CassandraLauncher
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 object Main {
 
   def main(args: Array[String]): Unit = {
+
+
+    startNode()
+    /*
+
+         Instead of passing args to the command line set everything based on env. variables
+
     args.headOption match {
 
-      case Some(portString) if portString.matches("""\d+""") =>
-        val port = portString.toInt
-        val httpPort = ("80" + portString.takeRight(2)).toInt
-        startNode(port, httpPort)
+       case Some(portString) if portString.matches("""\d+""") =>
+         val port = portString.toInt
+         val httpPort = ("80" + portString.takeRight(2)).toInt
+         startNode(port, httpPort)
 
-      case Some("cassandra") =>
-        startCassandraDatabase()
-        println("Started Cassandra, press Ctrl + C to kill")
-        new CountDownLatch(1).await()
+       case Some("cassandra") =>
+         startCassandraDatabase()
+         println("Started Cassandra, press Ctrl + C to kill")
+         new CountDownLatch(1).await()
 
-      case None =>
-        throw new IllegalArgumentException("port number, or cassandra required argument")
-    }
+       case None =>
+         throw new IllegalArgumentException("port number, or cassandra required argument")
+     }*/
   }
 
-  def startNode(port: Int, httpPort: Int): Unit = {
-    val system = ActorSystem[Nothing](Guardian(), "Shopping", config(port, httpPort))
+  def startNode(): Unit = {
+
+    val maybeEnvStr = sys.env.get("CONF_ENV")
+    println(s"Loading config from $maybeEnvStr")
+
+    val config: Config = maybeEnvStr.fold(ConfigFactory.load()) { env =>
+      ConfigFactory.load(s"application-$env").withFallback(ConfigFactory.load())
+    }
+
+    val system = ActorSystem[Nothing](Guardian(), "Shopping", config)
+
+    config.entrySet().forEach(nxt => system.log.info(s"$nxt"))
 
     if (Cluster(system).selfMember.hasRole("read-model"))
       createTables(system)
   }
 
-  def config(port: Int, httpPort: Int): Config =
-    ConfigFactory.parseString(s"""
-      akka.remote.artery.canonical.port = $port
-      shopping.http.port = $httpPort
-       """).withFallback(ConfigFactory.load())
+  /*
+     Instead of passing args to the command line set everything based on env. variables
+     def config(port: Int, httpPort: Int): Config =
+     ConfigFactory.parseString(s"""
+       akka.remote.artery.canonical.port = $port
+       shopping.http.port = $httpPort
+        """).withFallback(ConfigFactory.load())
+
+        */
 
   /**
    * To make the sample easier to run we kickstart a Cassandra instance to
@@ -61,7 +79,8 @@ object Main {
     val session = CassandraSessionExtension(system).session
 
     // TODO use real replication strategy in real application
-    val keyspaceStmt = """
+    val keyspaceStmt =
+      """
       CREATE KEYSPACE IF NOT EXISTS akka_cqrs_sample
       WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }
       """

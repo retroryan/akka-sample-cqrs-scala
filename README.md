@@ -29,19 +29,32 @@ sbt "runMain sample.cqrs.Main cassandra"
 2. Start a node that runs the write model:
 
 ```
-sbt -Dakka.cluster.roles.0=write-model "runMain sample.cqrs.Main 2551"
+export CASSANDRA_CONTACT_POINT_ONE="127.0.0.1"
+export CLUSTER_ROLE_ONE="write-model"
+export CLUSTER_ROLE_TWO="read-model"
+export AKKA_CLUSTER_PORT=2551
+export HTTP_PORT=8051
+sbt "runMain sample.cqrs.Main"
 ```
 
 3. Start a node that runs the read model:
 
 ```
-sbt -Dakka.cluster.roles.0=read-model "runMain sample.cqrs.Main 2552"
+export CONF_ENV="dev"
+export CASSANDRA_CONTACT_POINT_ONE="127.0.0.1"
+export CLUSTER_ROLE_ONE="read-model"
+export AKKA_CLUSTER_PORT=2552
+export HTTP_PORT=8052
+sbt "runMain sample.cqrs.Main"
 ```
 
 4. More write or read nodes can be started started by defining roles and port:
 
 ```
+export CONF_ENV="dev"
+export CLUSTER_ROLE_ONE="write-model"
 sbt -Dakka.cluster.roles.0=write-model "runMain sample.cqrs.Main 2553"
+export CLUSTER_ROLE_ONE="read-model"
 sbt -Dakka.cluster.roles.0=read-model "runMain sample.cqrs.Main 2554"
 ```
 
@@ -62,3 +75,32 @@ curl -X POST -H "Content-Type: application/json" -d '{}' http://127.0.0.1:8051/s
 ```
 
 or same `curl` commands to port 8052.
+
+Docker Image
+=================
+
+sbt docker:publishLocal
+
+Akka Cluster
+============
+
+curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.13.0/install.sh | bash -s 0.13.0
+
+
+kubectl create -f https://operatorhub.io/install/akka-cluster-operator.yaml
+
+kubectl get csv -n operators
+
+
+Cassandra
+============
+https://github.com/instaclustr/cassandra-operator/blob/master/doc/op_guide.md
+
+kubectl apply -f deploy/crds.yaml
+kubectl apply -f deploy/bundle.yaml
+kubectl get pods | grep cassandra-operator
+kubectl apply -f examples/example-datacenter-minimal.yaml 
+kubectl get pods | grep cassandra-test
+kubectl exec cassandra-test-dc-cassandra-rack1-0 -c cassandra -- nodetool status
+
+
