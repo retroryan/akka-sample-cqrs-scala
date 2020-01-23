@@ -7,3 +7,4 @@ data:
   read-model: "read-model"
   cassandra-contact-point-one: "cassandra-test-dc-cassandra-seeds"
   conf_env: "kubernetes"
+  http_port: "8080"

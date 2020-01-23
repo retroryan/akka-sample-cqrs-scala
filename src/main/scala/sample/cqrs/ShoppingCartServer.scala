@@ -19,7 +19,7 @@ class ShoppingCartServer(routes: Route, port: Int, system: ActorSystem[_]) {
   import system.executionContext
 
   def start(): Unit = {
-    Http().bindAndHandle(routes, "localhost", port).onComplete {
+    Http().bindAndHandle(routes, "0.0.0.0", port).onComplete {
       case Success(binding) =>
         val address = binding.localAddress
         system.log.info("Shopping online at http://{}:{}/", address.getHostString, address.getPort)

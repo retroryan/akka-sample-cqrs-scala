@@ -61,8 +61,9 @@ sbt -Dakka.cluster.roles.0=read-model "runMain sample.cqrs.Main 2554"
 Try it with curl:
 
 ```
+export SERVER_HOST=35.223.174.159
 # add item to cart
-curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://127.0.0.1:8051/shopping/carts
+curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://35.223.174.159:8080/shopping/carts
 
 # get cart
 curl http://127.0.0.1:8051/shopping/carts/cart1

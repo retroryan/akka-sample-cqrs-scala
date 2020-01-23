@@ -2,6 +2,7 @@ package sample.cqrs
 
 import java.io.File
 
+import akka.actor.CoordinatedShutdown
 import akka.actor.typed.{ActorSystem, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.cluster.typed.Cluster
@@ -51,9 +52,14 @@ object Main {
 
     val system = ActorSystem[Nothing](Guardian(), "Shopping", config)
 
+    val cluster = Cluster(system)
+    system.log.info("Started [" + system + "], cluster.selfAddress = " + cluster.selfMember.address + ")")
+
     import akka.actor.typed.scaladsl.adapter._
-    AkkaManagement.get(system.toClassic).start
-    ClusterBootstrap.get(system.toClassic).start
+
+    val classicSystem = system.toClassic
+    AkkaManagement.get(classicSystem).start
+    ClusterBootstrap.get(classicSystem).start
 
     config.entrySet().forEach(nxt => system.log.info(s"$nxt"))
 

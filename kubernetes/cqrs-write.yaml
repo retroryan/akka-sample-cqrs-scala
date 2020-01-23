@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: main-write
-        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.4
+        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.7
         readinessProbe:
           httpGet:
             path: "/ready"
@@ -36,6 +36,11 @@ spec:
             configMapKeyRef:
               name: app-config
               key: conf_env
+        - name: HTTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: http_port
         - name: CLUSTER_ROLE_ONE
           valueFrom:
             configMapKeyRef:
