@@ -5,6 +5,10 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        app: cqrs-service
+        actorSystemName: cqrs-service
     spec:
       containers:
       - name: main-write
