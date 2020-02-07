@@ -7,8 +7,8 @@ spec:
   template:
     spec:
       containers:
-      - name: main-read
-        image: cqrs-service:0.2
+      - name: main-write
+        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.8
         readinessProbe:
           httpGet:
             path: "/ready"
@@ -31,6 +31,16 @@ spec:
         - name: management
           containerPort: 8558
         env:
+        - name: CONF_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: conf_env
+        - name: HTTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: http_port
         - name: CLUSTER_ROLE_ONE
           valueFrom:
             configMapKeyRef:

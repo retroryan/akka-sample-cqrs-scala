@@ -63,7 +63,8 @@ Try it with curl:
 ```
 export SERVER_HOST=35.223.174.159
 # add item to cart
-curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://35.223.174.159:8080/shopping/carts
+curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://35.232.208.63:8080/shopping/carts
+curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://localhost:8080/shopping/carts
 
 # get cart
 curl http://127.0.0.1:8051/shopping/carts/cart1
@@ -100,8 +101,13 @@ https://github.com/instaclustr/cassandra-operator/blob/master/doc/op_guide.md
 kubectl apply -f deploy/crds.yaml
 kubectl apply -f deploy/bundle.yaml
 kubectl get pods | grep cassandra-operator
-kubectl apply -f examples/example-datacenter-minimal.yaml 
+kubectl apply -f examples/example-datacenter-minimal.yaml
 kubectl get pods | grep cassandra-test
 kubectl exec cassandra-test-dc-cassandra-rack1-0 -c cassandra -- nodetool status
 
 
+
+Kubernetes Commands:
+=========================
+kubectl create -f kubernetes/namespace.json
+kubectl config set-context --current --namespace=cqrs

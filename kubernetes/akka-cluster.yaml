@@ -6,7 +6,7 @@ metadata:
   name: cqrs-service
   namespace: cqrs
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: cqrs-service
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: cqrs-service
-        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.7
+        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.8
         readinessProbe:
           httpGet:
             path: /ready
