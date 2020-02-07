@@ -50,7 +50,7 @@ object Main {
       ConfigFactory.load(s"application-$env").withFallback(ConfigFactory.load())
     }
 
-    val system = ActorSystem[Nothing](Guardian(), "Shopping", config)
+    val system = ActorSystem[Nothing](Guardian(), "cqrs-service", config)
 
     val cluster = Cluster(system)
     system.log.info("Started [" + system + "], cluster.selfAddress = " + cluster.selfMember.address + ")")
