@@ -2,9 +2,9 @@
   "kind": "Namespace",
   "apiVersion": "v1",
   "metadata": {
-    "name": "cqrs",
+    "name": "cassandra-testing",
     "labels": {
-      "name": "cqrs"
+      "name": "cassandra-testing"
     }
   }
 }

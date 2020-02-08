@@ -111,3 +111,9 @@ Kubernetes Commands:
 =========================
 kubectl create -f kubernetes/namespace.json
 kubectl config set-context --current --namespace=cqrs
+
+
+Pushing it to docker hub:
+==========================
+
+docker push retroryan/akka-sample-cqrs-scala:1.8

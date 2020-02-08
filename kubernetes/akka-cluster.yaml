@@ -4,7 +4,7 @@ metadata:
   labels:
     app: cqrs-service
   name: cqrs-service
-  namespace: cqrs
+  namespace: cassandra-testing
 spec:
   replicas: 3
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: cqrs-service
-        image: gcr.io/none-219021/akka-sample-cqrs-scala:1.8
+        image: retroryan/akka-sample-cqrs-scala:1.8
         readinessProbe:
           httpGet:
             path: /ready
@@ -40,7 +40,7 @@ spec:
           protocol: TCP
         env:
         - name: NAMESPACE
-          value: cqrs
+          value: cassandra-testing
         - name: CONF_ENV
           valueFrom:
             configMapKeyRef:
@@ -68,7 +68,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: pod-reader
-  namespace: cqrs
+  namespace: cassandra-testing
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["pods"]
@@ -78,7 +78,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: read-pods
-  namespace: cqrs
+  namespace: cassandra-testing
 subjects:
 # Note the `name` line below. The first default refers to the namespace. The second refers to the service account name.
 # For instance, `name: system:serviceaccount:myns:default` would refer to the default service account in namespace `myns`
