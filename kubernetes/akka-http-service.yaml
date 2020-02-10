@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-cqrs-service
+  labels:
+    app: http-cqrs-service
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: cqrs-service
+  clusterIP: None
+  publishNotReadyAddresses: true

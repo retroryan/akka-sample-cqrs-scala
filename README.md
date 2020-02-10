@@ -67,7 +67,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId"
 curl -X POST -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":3}' http://localhost:8080/shopping/carts
 
 # get cart
-curl http://127.0.0.1:8051/shopping/carts/cart1
+curl http://cqrs-service-cassandra-testing.apps.bhf-vader-dev.p3m4.p1.openshiftapps.com/shopping/carts/cart1
 
 # update quantity of item
 curl -X PUT -H "Content-Type: application/json" -d '{"cartId":"cart1", "itemId":"socks", "quantity":5}' http://127.0.0.1:8051/shopping/carts
@@ -112,6 +112,7 @@ Kubernetes Commands:
 kubectl create -f kubernetes/namespace.json
 kubectl config set-context --current --namespace=cqrs
 
+kubectl expose deployment cqrs-service --type=LoadBalancer --name=cqrs-service-service
 
 Pushing it to docker hub:
 ==========================
